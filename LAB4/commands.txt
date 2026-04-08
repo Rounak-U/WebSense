@@ -1,0 +1,103 @@
+# -------------------------------
+# TASK 1: Basic Docker Commands
+# -------------------------------
+
+# Check Docker version
+docker --version
+
+# Docker system info
+docker info
+
+# Pull Node image
+docker pull node
+
+# List images
+docker images
+
+# Run container
+docker run node
+
+# List all containers
+docker ps -a
+
+# Remove container
+docker rm <container-id>
+
+# Remove image
+docker rmi <image>
+
+
+# -------------------------------
+# TASK 2: Create Docker Container (Custom)
+# -------------------------------
+
+# Create project folder
+mkdir rounak-docker
+cd rounak-docker
+
+# Create files
+touch Dockerfile
+touch app.js
+
+
+# -------------------------------
+# TASK 3: Node.js App Code
+# -------------------------------
+# (Add this manually in app.js)
+
+# const http = require("http");
+# const server = http.createServer((req, res) => {
+#   res.writeHead(200, { "Content-Type": "text/plain" });
+#   res.end("Hello from Rounak's Node.js Docker Server!");
+# });
+# server.listen(3000, () => {
+#   console.log("Server running on port 3000");
+# });
+
+
+# -------------------------------
+# TASK 4: Dockerfile
+# -------------------------------
+# (Add this manually in Dockerfile)
+
+# FROM node:18
+# WORKDIR /app
+# COPY . .
+# EXPOSE 3000
+# CMD ["node", "app.js"]
+
+
+# -------------------------------
+# TASK 5: Build Docker Image
+# -------------------------------
+docker build -t rounak_app .
+
+
+# -------------------------------
+# TASK 6: Check Image
+# -------------------------------
+docker images
+
+
+# -------------------------------
+# TASK 7: Run Container
+# -------------------------------
+docker run -p 3000:3000 rounak_app
+
+
+# -------------------------------
+# TASK 8: Check Running Containers
+# -------------------------------
+docker ps
+
+
+# -------------------------------
+# TASK 9: Check Logs
+# -------------------------------
+docker logs <container-id>
+
+
+# -------------------------------
+# TASK 10: Image History
+# -------------------------------
+docker history rounak_app

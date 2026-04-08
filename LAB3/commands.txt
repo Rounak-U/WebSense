@@ -1,0 +1,60 @@
+# -------------------------------
+# TASK 0: AWS Setup (Manual GUI)
+# -------------------------------
+# (Do this in AWS Console)
+# - Open DynamoDB
+# - Create table
+# - Add primary key (studentId)
+
+
+# -------------------------------
+# TASK 1: Node.js + DynamoDB
+# -------------------------------
+
+# Initialize project
+npm init -y
+
+# Install AWS SDK
+npm install aws-sdk
+
+
+# -------------------------------
+# Configure AWS CLI
+# -------------------------------
+aws configure
+
+# Enter:
+# AWS Access Key
+# AWS Secret Key
+# Region: ap-south-1
+# Output: json
+
+
+# -------------------------------
+# Run Node.js file
+# -------------------------------
+node dynamodb.js
+
+
+# -------------------------------
+# (Inside dynamodb.js - operations)
+# -------------------------------
+# - Create Table
+# - Insert Data
+# - Update Data
+# - Delete Table
+
+
+# -------------------------------
+# TASK 2: Go Lang + DynamoDB
+# -------------------------------
+
+# Initialize Go module
+go mod init dynamo-go
+
+# Install AWS SDK (Go)
+go get github.com/aws/aws-sdk-go
+go get github.com/aws/aws-sdk-go-v2
+
+# Run Go file
+go run main.go

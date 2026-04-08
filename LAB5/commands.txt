@@ -1,0 +1,124 @@
+# -------------------------------
+# STEP 1: Install Minikube
+# -------------------------------
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+
+# -------------------------------
+# STEP 2: Start Minikube
+# -------------------------------
+minikube start --driver=docker
+
+
+# -------------------------------
+# STEP 3: Check Status
+# -------------------------------
+minikube status
+
+
+# -------------------------------
+# STEP 4: Open Dashboard
+# -------------------------------
+minikube dashboard
+
+
+# -------------------------------
+# STEP 5: Create Deployment (nginx)
+# -------------------------------
+kubectl create deployment my-nginx --image=nginx
+
+
+# -------------------------------
+# STEP 6: Apply YAML Deployment (if using file)
+# -------------------------------
+kubectl apply -f deployment.yaml
+
+
+# -------------------------------
+# STEP 7: Check Deployment
+# -------------------------------
+kubectl get deployments
+
+kubectl get pods
+
+
+# -------------------------------
+# STEP 8: Describe Deployment
+# -------------------------------
+kubectl describe deployment my-nginx
+
+
+# -------------------------------
+# STEP 9: Expose Service
+# -------------------------------
+kubectl expose deployment my-nginx --type=NodePort --port=80
+
+
+# -------------------------------
+# STEP 10: Check Services
+# -------------------------------
+kubectl get services
+
+
+# -------------------------------
+# STEP 11: Open Service in Browser
+# -------------------------------
+minikube service my-nginx
+
+
+# -------------------------------
+# STEP 12: Setup ML Service (Python)
+# -------------------------------
+mkdir ml-service
+cd ml-service
+
+# Create app file manually (app.py)
+# Create requirements.txt manually
+
+
+# -------------------------------
+# STEP 13: Build Docker Image (Minikube)
+# -------------------------------
+eval $(minikube docker-env)
+
+docker build -t ml-service .
+
+
+# -------------------------------
+# STEP 14: Check Images
+# -------------------------------
+docker images
+
+
+# -------------------------------
+# STEP 15: Create ML Deployment
+# -------------------------------
+kubectl apply -f ml-deployment.yaml
+
+
+# -------------------------------
+# STEP 16: Check Pods
+# -------------------------------
+kubectl get pods
+
+
+# -------------------------------
+# STEP 17: Expose ML Service
+# -------------------------------
+kubectl expose deployment ml-service --type=NodePort --port=5000
+
+
+# -------------------------------
+# STEP 18: Run Application
+# -------------------------------
+minikube service ml-service
+
+
+# -------------------------------
+# STEP 19: Test Prediction API
+# -------------------------------
+curl -X POST http://<MINIKUBE-IP>:<NODEPORT>/predict \
+-H "Content-Type: application/json" \
+-d '{"x":10}'

@@ -1,0 +1,85 @@
+# -------------------------------
+# TASK 1: Install MPI on both VMs
+# -------------------------------
+sudo apt update
+sudo apt install mpich -y
+
+# Check version
+mpirun --version
+
+
+# -------------------------------
+# TASK 2: Check IP Address (VM1 & VM2)
+# -------------------------------
+ip a
+
+# OR
+hostname -I
+
+
+# -------------------------------
+# TASK 3: Test Network (Ping)
+# -------------------------------
+ping <VM2-IP>   # from VM1
+ping <VM1-IP>   # from VM2
+
+
+# -------------------------------
+# TASK 4: Setup SSH (Passwordless)
+# -------------------------------
+ssh-keygen -t rsa
+
+# Copy key to other VM
+ssh-copy-id username@<VM-IP>
+
+# Test SSH
+ssh username@<VM-IP>
+
+
+# -------------------------------
+# TASK 5: Create MPI Program
+# -------------------------------
+nano hello.c
+
+# -------------------------------
+# TASK 6: Compile MPI Program
+# -------------------------------
+mpicc hello.c -o hello
+
+
+# -------------------------------
+# TASK 7: Create Hosts File
+# -------------------------------
+nano hosts
+
+# Add:
+# <VM1-IP>
+# <VM2-IP>
+
+
+# -------------------------------
+# TASK 8: Run MPI Program
+# -------------------------------
+mpirun -np 2 --hostfile hosts ./hello
+
+
+# -------------------------------
+# TASK 9: AWS EC2 (Manual Steps)
+# -------------------------------
+# (From AWS Console)
+# - Launch Ubuntu instance
+# - Enable SSH (port 22)
+
+
+# -------------------------------
+# TASK 10: Connect to AWS Instance
+# -------------------------------
+chmod 400 key.pem
+
+ssh -i key.pem ubuntu@<PUBLIC-IP>
+
+
+# -------------------------------
+# TASK 11: Stop Instance (Optional)
+# -------------------------------
+# Done from AWS Console
