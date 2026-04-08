@@ -1,0 +1,40 @@
+# -------------------------------
+# Connect to vSphere Server
+# -------------------------------
+Connect-VIServer <vcenter-ip>
+
+# Get all VMs
+Get-VM
+
+# Get ESXi Hosts
+Get-VMHost
+
+# Store ESXi host in variable
+$esx = Get-VMHost
+
+# Display host info
+$esx
+
+
+# -------------------------------
+# Create a New VM
+# -------------------------------
+New-VM -Name "Rounak-VM" -VMHost $esx -Datastore <datastore>
+
+
+# -------------------------------
+# Clone Existing VM
+# -------------------------------
+New-VM -Name "Clone-VM" -VM <existing-vm-name> -VMHost $esx
+
+
+# -------------------------------
+# Convert VM to Template
+# -------------------------------
+Set-VM -VM "Clone-VM" -ToTemplate -Confirm:$false
+
+
+# -------------------------------
+# Deploy VM from Template
+# -------------------------------
+New-VM -Name "New-VM-from-template" -Template "Clone-VM" -VMHost $esx

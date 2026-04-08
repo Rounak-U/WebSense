@@ -1,0 +1,133 @@
+# -------------------------------
+# STEP 1: Install Terraform
+# -------------------------------
+sudo apt update
+sudo apt install -y gnupg software-properties-common curl
+
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+sudo apt update
+sudo apt install terraform -y
+
+# Check version
+terraform -version
+
+
+# -------------------------------
+# STEP 2: Terraform Project Setup
+# -------------------------------
+mkdir terraform-lab
+cd terraform-lab
+
+# Create files
+touch main.tf variables.tf outputs.tf
+
+
+# -------------------------------
+# STEP 3: Initialize Terraform
+# -------------------------------
+terraform init
+
+
+# -------------------------------
+# STEP 4: Plan & Apply
+# -------------------------------
+terraform plan
+terraform apply -auto-approve
+
+
+# -------------------------------
+# STEP 5: Install MongoDB
+# -------------------------------
+wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+
+sudo apt update
+sudo apt install -y mongodb-org
+
+
+# -------------------------------
+# STEP 6: Start MongoDB
+# -------------------------------
+sudo systemctl start mongod
+sudo systemctl enable mongod
+
+# Check status
+sudo systemctl status mongod
+
+
+# -------------------------------
+# STEP 7: Open Mongo Shell
+# -------------------------------
+mongosh
+
+
+# -------------------------------
+# STEP 8: Create Database
+# -------------------------------
+use btech_RounakSuccess
+
+
+# -------------------------------
+# STEP 9: Insert Records
+# -------------------------------
+db.success.insertMany([
+  {
+    name: "Rounak",
+    achievement: "Hackathon Winner",
+    description: "Built a reporting platform"
+  },
+  {
+    name: "Rounak",
+    achievement: "Internship",
+    description: "Worked on MERN stack"
+  },
+  {
+    name: "Rounak",
+    achievement: "Project",
+    description: "E-commerce platform"
+  }
+])
+
+
+# -------------------------------
+# STEP 10: View Data
+# -------------------------------
+db.success.find()
+
+
+# -------------------------------
+# STEP 11: Delete One Record
+# -------------------------------
+db.success.deleteOne({ achievement: "Internship" })
+
+
+# -------------------------------
+# STEP 12: Exit Mongo Shell
+# -------------------------------
+exit
+
+
+# -------------------------------
+# STEP 13: Git Setup
+# -------------------------------
+git init
+git add .
+git commit -m "Terraform MongoDB setup"
+
+# Add remote repo
+git remote add origin https://github.com/<your-username>/<repo>.git
+
+git branch -M main
+git push -u origin main
+
+
+# -------------------------------
+# STEP 14: Terraform CI/CD (GitHub Actions)
+# -------------------------------
+# Create workflow folder
+mkdir -p .github/workflows
+nano .github/workflows/terraform.yml

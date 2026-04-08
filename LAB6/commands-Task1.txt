@@ -1,0 +1,80 @@
+# -------------------------------
+# STEP 1: Setup Node Project
+# -------------------------------
+npm init -y
+npm install express body-parser
+
+
+# -------------------------------
+# STEP 2: Run Locally (Optional)
+# -------------------------------
+node server.js
+
+
+# -------------------------------
+# STEP 3: Build Docker Image
+# -------------------------------
+docker build -t linear-service .
+
+
+# -------------------------------
+# STEP 4: Start Minikube
+# -------------------------------
+minikube start
+
+
+# -------------------------------
+# STEP 5: Use Minikube Docker
+# -------------------------------
+eval $(minikube docker-env)
+
+# Rebuild image inside minikube
+docker build -t linear-service .
+
+
+# -------------------------------
+# STEP 6: Deploy to Kubernetes
+# -------------------------------
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+
+# -------------------------------
+# STEP 7: Check Resources
+# -------------------------------
+kubectl get pods
+kubectl get deployments
+kubectl get services
+
+
+# -------------------------------
+# STEP 8: Describe Resources
+# -------------------------------
+kubectl describe deployment linear-deployment
+kubectl describe service linear-service
+
+
+# -------------------------------
+# STEP 9: Access Service
+# -------------------------------
+minikube service linear-service
+
+
+# -------------------------------
+# STEP 10: Test API (Prediction)
+# -------------------------------
+curl -X POST http://<MINIKUBE-IP>:30007/predict \
+-H "Content-Type: application/json" \
+-d '{"x":10}'
+
+
+# -------------------------------
+# STEP 11: Git Setup (Optional CI/CD)
+# -------------------------------
+git init
+git add .
+git commit -m "Linear Regression Service"
+
+git remote add origin https://github.com/<your-username>/<repo>.git
+git branch -M main
+git push -u origin main

@@ -1,0 +1,113 @@
+# -------------------------------
+# STEP 1: Install Dependencies (Node Project)
+# -------------------------------
+npm init -y
+npm install express cors
+
+
+# -------------------------------
+# STEP 2: Run Locally (Optional Test)
+# -------------------------------
+node server.js
+
+
+# -------------------------------
+# STEP 3: Build Docker Image
+# -------------------------------
+docker build -t gps-microservice .
+
+
+# -------------------------------
+# STEP 4: Start Minikube
+# -------------------------------
+minikube start
+
+# Use Minikube Docker environment
+eval $(minikube docker-env)
+
+
+# -------------------------------
+# STEP 5: Build Image inside Minikube
+# -------------------------------
+docker build -t gps-microservice .
+
+
+# -------------------------------
+# STEP 6: Kubernetes Deployment
+# -------------------------------
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+
+# -------------------------------
+# STEP 7: Check Resources
+# -------------------------------
+kubectl get pods
+kubectl get services
+
+
+# -------------------------------
+# STEP 8: Open Service
+# -------------------------------
+minikube service gps-service
+
+
+# -------------------------------
+# STEP 9: Port Forward (Alternative)
+# -------------------------------
+kubectl port-forward service/gps-service 3000:3000
+
+
+# -------------------------------
+# STEP 10: Install Helm (Prometheus)
+# -------------------------------
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Check version
+helm version
+
+
+# -------------------------------
+# STEP 11: Add Prometheus Repo
+# -------------------------------
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo update
+
+
+# -------------------------------
+# STEP 12: Install Prometheus
+# -------------------------------
+helm install prometheus prometheus-community/prometheus
+
+
+# -------------------------------
+# STEP 13: Check Pods
+# -------------------------------
+kubectl get pods
+
+
+# -------------------------------
+# STEP 14: Access Prometheus Dashboard
+# -------------------------------
+kubectl port-forward svc/prometheus-server 9090:80
+
+
+# -------------------------------
+# STEP 15: GitHub Repo Setup
+# -------------------------------
+git init
+git add .
+git commit -m "GPS Microservice"
+
+git remote add origin https://github.com/<your-username>/<repo>.git
+
+git branch -M main
+git push -u origin main
+
+
+# -------------------------------
+# STEP 16: Create GitHub Actions Workflow
+# -------------------------------
+mkdir -p .github/workflows
+nano .github/workflows/main.yml
