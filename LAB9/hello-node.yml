@@ -1,0 +1,9 @@
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+
+functions:
+  hello-node:
+    lang: node
+    handler: ./hello-node
+    image: rounakukey512/hello-node:latest
