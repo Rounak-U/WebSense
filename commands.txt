@@ -1,0 +1,165 @@
+# -------------------------------
+# STEP 1: Install faas-cli
+# -------------------------------
+curl -sSL https://cli.openfaas.com | sudo sh
+
+# Check version
+faas-cli version
+
+
+# -------------------------------
+# STEP 2: Start Minikube
+# -------------------------------
+minikube start
+
+# Enable ingress
+minikube addons enable ingress
+
+
+# -------------------------------
+# STEP 3: Create Namespaces
+# -------------------------------
+kubectl create namespace openfaas
+kubectl create namespace openfaas-fn
+
+# Verify namespaces
+kubectl get namespaces
+
+
+# -------------------------------
+# STEP 4: Install OpenFaaS using Helm
+# -------------------------------
+helm repo add openfaas https://openfaas.github.io/faas-netes/
+helm repo update
+
+helm upgrade openfaas openfaas/openfaas \
+  --install \
+  --namespace openfaas \
+  --set functionNamespace=openfaas-fn \
+  --set generateBasicAuth=true
+
+
+# -------------------------------
+# STEP 5: Get Password & Login
+# -------------------------------
+kubectl -n openfaas get secret basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode
+
+# Port forward gateway
+kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+
+# Login to OpenFaaS
+echo -n <PASSWORD> | faas-cli login --username admin --password-stdin
+
+
+# -------------------------------
+# STEP 6: Pull Templates
+# -------------------------------
+faas-cli template pull
+
+
+# -------------------------------
+# STEP 7: Create Function
+# -------------------------------
+faas-cli new hello-node --lang node
+
+# Move into folder
+cd hello-node
+
+
+# -------------------------------
+# STEP 8: (Manual Edit)
+# Edit handler.js
+# -------------------------------
+# Replace with:
+# module.exports = async (event, context) => {
+#   return {
+#     statusCode: 200,
+#     body: JSON.stringify({ message: "Hello from OpenFaaS Node.js!" })
+#   };
+# }
+
+
+# -------------------------------
+# STEP 9: Edit YAML (Docker Image)
+# -------------------------------
+# Open hello-node.yml
+# Replace image with your DockerHub username
+# Example:
+# image: <your-dockerhub-username>/hello-node:latest
+
+
+# -------------------------------
+# STEP 10: Build & Deploy Function
+# -------------------------------
+faas-cli up -f hello-node.yml
+
+
+# -------------------------------
+# STEP 11: Push to DockerHub
+# -------------------------------
+docker login
+
+# Already handled in faas-cli up (build + push)
+# If needed:
+faas-cli build -f hello-node.yml
+faas-cli push -f hello-node.yml
+
+
+# -------------------------------
+# STEP 12: Invoke Function
+# -------------------------------
+faas-cli list
+
+# Call function
+faas-cli invoke hello-node
+
+
+# -------------------------------
+# STEP 13: Prometheus Monitoring
+# -------------------------------
+# Port forward Prometheus
+kubectl port-forward -n openfaas svc/prometheus 9090:9090 &
+
+
+# -------------------------------
+# STEP 14: Generate Load
+# -------------------------------
+for i in {1..10}; do
+  faas-cli invoke hello-node
+done
+
+---------------------------------
+### TASK 2
+---------------------------------
+
+# -------------------------------
+# STEP 15: GitHub Actions Self-hosted Runner
+# -------------------------------
+# Download runner (replace URL with latest)
+mkdir actions-runner && cd actions-runner
+
+curl -o actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/releases/download/v2.315.0/actions-runner-linux-x64-2.315.0.tar.gz
+
+tar xzf ./actions-runner-linux-x64.tar.gz
+
+# Configure runner (use your repo URL + token)
+./config.sh --url https://github.com/<your-username>/<repo> --token <TOKEN>
+
+# Start runner
+./run
+
+
+# -------------------------------
+# STEP 16: Terraform Commands
+# -------------------------------
+cd terraform
+
+terraform init
+terraform plan
+terraform apply -auto-approve
+
+
+# -------------------------------
+# STEP 17: Destroy (Important for Task 2)
+# -------------------------------
+terraform destroy -auto-approve
